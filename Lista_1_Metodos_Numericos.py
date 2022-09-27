@@ -170,7 +170,7 @@ def newton(x, equacao, tolerancia, iteracoes, pn):
         x1 = x - funcao(equacao, x) / derivada(equacao, x)
         listaPN.append(x1)
         listaYPN.append(funcao(equacao, x1))
-        if positivo(x1) - positivo(x) < tolerancia:
+        if positivo(x1 - x) < tolerancia:
             if pn:
                 return listaPN, listaYPN
             return x1
@@ -205,6 +205,18 @@ def grafico(x1, x2, equacao, delta):
     plt.axhline(0, color='black')
     plt.legend()                  
     plt.show()
+
+def pontoFixo(A, p0, tolerancia, N):
+    p = 0
+    i = N
+    while i > 0:
+        p = 2*p0 - A*p0*p0
+        if positivo(p - p0) < tolerancia:
+            return p
+        p0 = p
+        i = i - 1
+    print("Falhou")
+    return -1
 
 def questao1():
     valores = ["0 10000001010 1001001100000000000000001000000000001000000000000000",
@@ -351,13 +363,41 @@ def questao9():
         valorY3 = funcao(equacao[i], valorX3)
         valorY2 = funcao(equacao[i], valorX2)
         pn, ypn = newton((intervalo[i][0] + intervalo[i][1]) / 2, equacao[i], tolerancia, iteracoes, True)
+        
         print(alternativa[i])
         print("     Valor de pn e F(pn) em bisecção:", valorX3, "e", valorY3)
         print("     Valor de pn e F(pn) na função Newton:", valorX2, "e", valorY2)
         print("     Valores de pn e Y(pn), com base na função ", func[tipo - 1], pn, ypn)
+
         graficoPN(intervalo[i][0], intervalo[i][1], equacao[i], tolerancia, iteracoes, tipo)
         grafico(intervalo[i][0], intervalo[i][1], equacao[i], delta)
-        graficoPN(intervalo[i][0], intervalo[i][1], equacao[i], tolerancia, iteracoes, 1)
-        grafico(intervalo[i][0], intervalo[i][1], equacao[i], delta)
 
-questao9()
+def questao10():
+    print(alternativa[0], "Se g(x) = 2x-Ax², g(p) = p = 2p-Ap², e assumindo que A > 0")
+    print("     Encontrando as raizes da equação algebricamente, temos que:")
+    print("     2p - Ap² - p = 0")
+    print("     p(1 - Ap) = 0")
+    print("     Extraindo as raízes")
+    print("     p' = 0")
+    print("     1 - Ap = 0")
+    print("     p = 1/A")
+    print("     Como A > 0, logo p converge.")
+    print("     Logo a iteração é válida.")
+
+    A = 2
+    p = 0.99
+    p = pontoFixo(A, p, 0.0001, 100)
+    print(alternativa[1], p)
+
+    print(alternativa[2], "Igualando a equação dada a zero, podemos encontrar as raizes da equação algebricamente:")
+    print("     2p - Ap² = 0")
+    print("     p(2 - Ap) = 0")
+    print("     Extraindo as raízes")
+    print("     p' = 0")
+    print("     2 - Ap = 0")
+    print("     p'' = 2/A")
+    print("     Logo, temos que no invervalo [0, 2/A] existe uma raiz válida.")
+    print("     Então, podemos afirmar que o intervalo varia de 0 <= g(x) <= 2/A")
+
+    
+questao10()
